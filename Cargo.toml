@@ -2,6 +2,9 @@
 name = "wr"
 version = "0.1.0"
 edition = "2024"
+authors = ["Givko"]
 
 [dependencies]
 clap = { version = "4.5.41", features = ["derive"] }
+crossterm = "0.29.0"
+ctrlc = "3.4.7"
