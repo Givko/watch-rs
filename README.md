@@ -12,36 +12,41 @@ A fast, cross-platform alternative to the Unix `watch` command, written in Rust.
 
 ### From Source
 
-git clone <https://github.com/yourusername/wr.git>
+```bash
+git clone https://github.com/yourusername/wr.git
 cd wr
 cargo build --release
-
-text
+```
 
 ### Usage
 
+```bash
 wr [OPTIONS] -- <COMMAND>...
-
-text
+```
 
 **Note:** The `--` separator is required before the command.
 
 ### Examples
 
-Monitor disk usage every 2 seconds (default)
-
+Monitor disk usage every 2 seconds (default):
+```bash
 wr -- df -h
-Check processes every 5 seconds
+```
 
+Check processes every 5 seconds:
+```bash
 wr -n 5 -- ps aux
-Monitor memory usage
+```
 
+Monitor memory usage:
+```bash
 wr -- free -h
-Watch directory contents
+```
 
+Watch directory contents:
+```bash
 wr -- ls -la /tmp
-
-text
+```
 
 ### Options
 
@@ -51,29 +56,30 @@ text
 
 ## Why wr?
 
-- **Ultra-short**: Just 2 characters vs 5 for `watch`
+- **Ultra-short**: Just 2 characters vs 5 for watch
 - **Cross-platform**: Works on Linux, macOS, and Windows
 - **Memory safe**: Built with Rust
-- **Familiar**: Drop-in replacement for Unix `watch`
+- **Familiar**: Drop-in replacement for Unix watch
 
 ## Current Limitations
 
 - Requires `--` separator before commands
-- Long-running commands (like `ping`, `tail -f`) not supported in this MVP
-- Use `Ctrl+C` to exit
+- Long-running commands (like ping, tail -f) not supported in this MVP
+- Use Ctrl+C to exit
 
 ## Dependencies
 
+```toml
 [dependencies]
 clap = { version = "4.0", features = ["derive"] }
 crossterm = "0.27"
 ctrlc = "3.4"
-
-text
+```
 
 ## License
 
 MIT License - see [LICENSE](LICENSE) for details.
 
 ---
+
 *Made with 🦀 by the Rust community*
