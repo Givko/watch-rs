@@ -1,25 +1,18 @@
-use clap::Parser;
+mod command_executor;
+mod command_parser;
+
 use crossterm::{
     execute,
     terminal::{Clear, ClearType},
 };
+use std::io::stdout;
 use std::thread;
-use std::{io::stdout, time};
 use std::{
     process::Command,
     sync::{Arc, atomic::AtomicBool},
 };
-#[derive(Parser, Debug)]
-#[command(author, version, about, long_about = None)]
-struct Cli {
-    /// Interval in seconds between command executions
-    #[arg(short = 'n', long = "interval", default_value = "2")]
-    interval: u64,
 
-    /// Command to execute
-    #[arg(required = true)]
-    command: Vec<String>,
-}
+use command_parser::{CommandConfig, CommandParser};
 
 fn main() {
     let is_interrupted: Arc<AtomicBool> = Arc::new(AtomicBool::new(false));
@@ -33,11 +26,14 @@ fn main() {
         return;
     };
 
-    let cli = Cli::parse();
-    let command = &cli.command[0];
-    let args = &cli.command[1..];
+    let parser = CommandParser::new();
+    let Some(command) = parser.get_command() else {
+        eprintln!("No command provided");
+        return;
+    };
+    let args = parser.get_arguments();
+    let sleep_duration = parser.get_sleep_duration();
 
-    let sleep_duration = time::Duration::from_secs(cli.interval);
     while !is_interrupted.load(std::sync::atomic::Ordering::Relaxed) {
         let Ok(_) = execute!(stdout(), Clear(ClearType::All)) else {
             println!("Failed to clear terminal");
