@@ -1,30 +1,33 @@
+use clap::Parser;
 use std::time::Duration;
 
-use clap::Parser;
+pub trait CommandConfig {
+    /// Returns the command which needs to be executed
+    /// if no command was parsed None will be returned
+    fn get_command(&self) -> Option<&String>;
 
-#[derive(Parser, Debug)]
-#[command(author, version, about, long_about = None)]
-struct Cli {
-    /// Interval in seconds between command executions
-    #[arg(short = 'n', long = "interval", default_value = "2")]
-    interval: u64,
+    /// Returns the arguments of the command, if any.
+    /// If no arguments were passed - &[] will be returned
+    fn get_arguments(&self) -> &[String];
 
-    /// Command to execute
-    #[arg(required = true)]
-    command: Vec<String>,
+    /// The sleep duration will be returned
+    /// Duration which we need to wait between executions by default is it 2 seconds
+    fn get_sleep_duration(&self) -> Duration;
 }
 
 pub struct CommandParser {
-    parser: Cli,
+    /// Internal parsed command from clap
+    parser: Command,
 }
 
 impl CommandParser {
     pub fn new() -> Self {
         CommandParser {
-            parser: Cli::parse(),
+            parser: Command::parse(),
         }
     }
 }
+
 impl CommandConfig for CommandParser {
     fn get_command(&self) -> Option<&String> {
         self.parser.command.first()
@@ -39,16 +42,14 @@ impl CommandConfig for CommandParser {
     }
 }
 
-pub trait CommandConfig {
-    /// Returns the command which needs to be executed
-    /// if no command was parsed None will be returned
-    fn get_command(&self) -> Option<&String>;
+#[derive(Parser, Debug)]
+#[command(author, version, about, long_about = None)]
+struct Command {
+    /// Interval in seconds between command executions
+    #[arg(short = 'n', long = "interval", default_value = "2")]
+    interval: u64,
 
-    /// Returns the arguments of the command, if any.
-    /// If no arguments were passed - &[] will be returned
-    fn get_arguments(&self) -> &[String];
-
-    /// The sleep duration will be returned
-    /// Duration which we need to wait between executions by default is it 2 seconds
-    fn get_sleep_duration(&self) -> Duration;
+    /// Command to execute
+    #[arg(required = true)]
+    command: Vec<String>,
 }
