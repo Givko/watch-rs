@@ -17,34 +17,34 @@ pub trait CommandConfig {
 
 pub struct CommandParser {
     /// Internal parsed command from clap
-    parser: Command,
+    cli_args: CliArgs,
 }
 
 impl CommandParser {
     pub fn new() -> Self {
         CommandParser {
-            parser: Command::parse(),
+            cli_args: CliArgs::parse(),
         }
     }
 }
 
 impl CommandConfig for CommandParser {
     fn get_command(&self) -> Option<&String> {
-        self.parser.command.first()
+        self.cli_args.command.first()
     }
 
     fn get_arguments(&self) -> &[String] {
-        self.parser.command.get(1..).unwrap_or_default()
+        self.cli_args.command.get(1..).unwrap_or_default()
     }
 
     fn get_sleep_duration(&self) -> Duration {
-        Duration::from_secs(self.parser.interval)
+        Duration::from_secs(self.cli_args.interval)
     }
 }
 
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]
-struct Command {
+struct CliArgs {
     /// Interval in seconds between command executions
     #[arg(short = 'n', long = "interval", default_value = "2")]
     interval: u64,
