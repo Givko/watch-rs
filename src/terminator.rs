@@ -32,8 +32,8 @@ impl Terminator for CommandTerminator {
     }
 }
 
-impl CommandTerminator {
-    pub fn new() -> Self {
+impl Default for CommandTerminator {
+    fn default() -> Self {
         CommandTerminator {
             is_interrupted: Arc::new(AtomicBool::new(false)),
         }
